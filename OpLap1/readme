@@ -1,0 +1,29 @@
+Run the porgram in terminal by using this commands: 
+1- gcc -o myshell myshell.c 
+2- ./myshell
+
+- For interacting with opearting system we use system call:  
+  	- Request services of the operating system 
+  	- Software interrupt changes the processor from user mode to kernel mode. 
+  	- Kernel is the core of oprating system which is closer to the hardware and system calls provide an interface to communicate with the opearting system's kernel.
+  	- System call is too fast, because there is no need to  trnslate system calls' instructions in compiler. E.g., fork() method is a system call whereas printf() is a high level instruction, but printf() should be compiled and translated to low level language.  
+
+
+
+- I/O Redirection: Allow to redirect the input or output of commands from or to files. And has three standard streams: 
+	- Standard input (stdin) : Number as stdin (0). The bash shell 	takes input from stdin, and by default keyboard is used as input.
+	- Standard output (stdout) : Number as stdout (1). The bash shell sends output to stdout. Output goes to display. 
+	- Standard error (stderr) : Number as stderr (2). The bash shell sends error message to stderr. Error message goes to display 
+
+
+
+ 
+ 
+- Program environment: Mean the state of a computer, and detrmined which programs are running. In a Dos system, the environment is an area in memory, and it used by the opreating system and program to store information. E.g., Windows will use the area to store user settings. 
+
+
+- Background program execution:  Run with the child, continuing to process without waiting. There is a chance that the parent run for a while as well, and wait for the child later, which might occur a sort of parallel processing operation. Any command can be run as a background proscess by typing a space and '&' after the command. 
+
+
+
+

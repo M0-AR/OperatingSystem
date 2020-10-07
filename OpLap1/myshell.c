@@ -3,8 +3,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <string.h>
+#include<signal.h>
 
-// Parent will wirte and child will read from the pipe
+
+// For pipe one will write and second will read
 #define READ 0
 #define WRITE 1
 
@@ -36,6 +38,7 @@ int main(void) {
 	clear();
 	while (1) {
 		type_prompt();
+		flag = 1;
 		// fgets(): Gets a line from standard in where user type e.g., ls
 		if (fgets(command, MaxLine, stdin) == NULL) {
 			break;
@@ -129,24 +132,38 @@ int splitCommandIntoArray(char *command, char **splitCommand) {
 // Execute pipe command
 void execPipe(char **command1, char **command2) {
     int fd[2];
-    pid_t childPid;
+    pid_t childPid1, childPid2;
     pipe(fd); // Passing information from one process to another
 
 
-    childPid = fork();
+    childPid1 = fork();
 
 
-    if (childPid == 0) { // Child
-        close(fd[WRITE]); // No writing necessary
-        dup2(fd[READ], 0);  // Duplicate object, create a copy of file descriptor
+    if (childPid1 == 0) { // Read Child
+	    close(fd[WRITE]); // No writing necessary
+        dup2(fd[READ], 0);  // Redirect read end file descriptor to standard input. Duplicate object, create a copy of file descriptor.
         close(fd[READ]);    // Already duplicated, Therefor we don't need any more
         execvp(command2[0], command2); // Execute command after pipe character
         // Child will never get to here
-    } else { // Parent
-        close(fd[WRITE]); // Not used
-        dup2(fd[READ], 0); 
-        close(fd[READ]);
-        execvp(command1[0], command1); // Execute command before pipe character
+    } else {
+	   childPid2 = fork();
+	   if (childPid2 == 0) { // Write Child 
+	 	 	close(fd[READ]); // Not used
+       	 	dup2(fd[WRITE], 1); // Redirect standard out put to the file descriptor 
+        	close(fd[WRITE]); // Have to close the write because whoever is reading on the read will be waiting for EOF. 
+        	execvp(command1[0], command1); // Execute command before pipe character
+        	// Child will never get to here
+    	}else {
+	    	// Parent 
+			int status;
+			close(fd[READ]);
+			close(fd[WRITE]);
+			waitpid(childPid1, &status, 0); // Wait for child to execute 
+			waitpid(childPid2, &status, 0);
+			// kill(childPid1,SIGKILL);
+			// kill(childPid2,SIGKILL);
+			exit(1);
+	    }
     }
 }
 

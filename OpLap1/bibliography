@@ -1,0 +1,75 @@
+Bibliography: 
+
+I used Man a lot in terminal 
+
+Creating your own header file in C: 
+https://stackoverflow.com/questions/7109964/creating-your-own-header-file-in-c
+
+Creating your own header file in c: https://stackoverflow.com/questions/7109964/creating-your-own-header-file-in-c
+Take an input in c: 
+https://www.educative.io/edpresso/how-to-use-the-fgets-function-in-c
+
+https://www.tutorialspoint.com/cprogramming/c_input_output.htm
+
+Compare two string: https://www.techonthenet.com/c_language/standard_library_functions/string_h/strncmp.php
+Making your own Linux Shell in C: 
+https://www.geeksforgeeks.org/making-linux-shell-c/
+
+Pwd command 
+https://stackoverflow.com/questions/43749628/how-can-i-implement-cd-command-in-my-own-shell-in-c
+
+     -	Really good examples of: execvp, pipe, dup2
+https://www.youtube.com/watch?v=Yf380zTr_ro&t=3277s
+
+
+size_t
+https://stackoverflow.com/questions/2550774/what-is-size-t-in-c 
+
+what \033[H\033[J mean
+	https://stackoverflow.com/questions/55672661/what-this-character-sequence-033h-033j-does-in-c#:~:text=Up%20vote%204,the%20bottom%20of%20the%20screen
+
+
+execvp - why does my program exit?
+https://stackoverflow.com/questions/34376282/execvp-why-does-my-program-exit
+
+
+
+Fork and pipe methods
+ 	https://www.geeksforgeeks.org/c-program-demonstrate-fork-and-pipe/?ref=rp
+
+Inspiration 
+https://stackoverflow.com/questions/33912024/shell-program-with-pipes-in-c/33933773
+
+https://www.youtube.com/watch?v=z4LEuxMGGs8&t=2s
+
+Pipe 
+https://stackoverflow.com/questions/33884291/pipes-dup2-and-exec
+
+https://stackoverflow.com/questions/26788603/simple-shell-with-pipe-function 	
+
+System call: https://www.geeksforgeeks.org introduction-of-system-call/ and also on google page there is a section call People also ask.
+
+I/O Redirection: 
+https://www.digitalocean.com/community/tutorials/an-introduction-to-linux-i-o-redirection
+
+
+https://homepages.uc.edu/~thomam/Intro_Unix_Text/IO_Redir_Pipes.html#:~:text=Input%2FOutput%20Redirection&text=I%2FO%20redirection%20is%20accomplished,is%20also%20considered%20a%20file).
+
+https://www.javatpoint.com/linux-input-output-redirection
+
+Program environment: 
+https://www.computerhope.com/jargon/e/environm.htm#:~:text=1.,utilizing%20the%20Windows%20operating%20system.
+
+Background program execution: 
+https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/3_Processes.html
+
+https://teaching.healthtech.dtu.dk/unix/index.php/Processes;_foreground_and_background,_ps,_top,_kill,_screen,_nohup_and_daemons
+
+
+
+
+
+
+
+
+- 
