@@ -119,7 +119,8 @@ struct memoryList* getBestFreeBlock(size_t size) {
 			 || currentBlock->size < bestBlock-> size)) {
 			bestBlock = currentBlock;
 		}
-	} while (currentBlock != head);
+		currentBlock = currentBlock->next;
+	} while (currentBlock != NULL);
 	return bestBlock;
 }
 
@@ -131,13 +132,16 @@ struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 		currentBlock -> size = size;
 		newBlock -> alloc = 0;
 		newBlock -> ptr = currentBlock->ptr + size;
-		
-		currentBlock -> next->last = newBlock;
+
+		/* Insert newBlock into doubly linked list */
+		if (currentBlock->next != NULL) 		
+			currentBlock -> next->last = newBlock;
 		newBlock -> next = currentBlock->next;
 		newBlock -> last = currentBlock;
 		currentBlock -> next = newBlock;
 		return newBlock;
 	}
+	// currentBlock->size = size;
 	return NULL;
 }
 
@@ -305,6 +309,34 @@ void try_mymem(int argc, char **argv) {
 }
 
 int main() {
-	printf("main");
+   // void *a, *b, *c, *d, *e;
+   // initmem(strat, 500);
+
+    printf("main\n");
+
+     strategies strat = Best;
+
+     initmem(strat, 500);
+     printf("init: 500 memory\n");
+// First creat first use
+     struct memoryList *b =  getBestFreeBlock(100);
+     printf("memoryalloc(100)");
+     struct memoryList *s = splitBlock(b , 100);
+     printf("Contents of structure %s Reminder:  %d\n", s, s->size);
+
+    void *b1 =  getBestFreeBlock(75);
+     printf("memoryalloc(75)");
+
+    struct memoryList *s1 = splitBlock(b1 , 75);
+    printf("Contents of structure %c Reminder:  %d\n", s1, s1->size);
+
+    void *b2 =  getBestFreeBlock(50);
+     printf("memoryalloc(50)");
+
+    struct memoryList *s2 = splitBlock(b2 , 50);
+    printf("Contents of structure %c Reminder:  %d\n", s2, s2->size);
+
+  //  print_memory_status();
+    printf("\nLast line in main");
 	return 0;
 }
