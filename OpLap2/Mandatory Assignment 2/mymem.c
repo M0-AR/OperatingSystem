@@ -127,7 +127,7 @@ struct memoryList* getBestFreeBlock(size_t size) {
 struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 	currentBlock -> alloc = 1;
 	if (currentBlock-> size != size) {
-		struct memoryList *newBlock = malloc(sizeof(struct memoryList)); // (struct memoryList *)
+		struct memoryList *newBlock = malloc(sizeof(struct memoryList));//Tail of node  // (struct memoryList *)
 		newBlock -> size = currentBlock->size - size;
 		currentBlock -> size = size;
 		newBlock -> alloc = 0;
@@ -146,9 +146,12 @@ struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 }
 
 /* Frees a block of memory previously allocated by mymalloc. */
-void myfree(void* block)
-{
-	return;
+void myfree(void *block) {
+    // malloc(sizeof(struct memoryList));
+    struct memoryList *currentBlock = block;
+    printf("myfree: Contents of structure %c was -> alloc: %d \n", currentBlock, currentBlock->alloc);
+    currentBlock->alloc = 0;
+    printf("myfree: Contents of structure %c is  -> alloc: %d \n", currentBlock, currentBlock->alloc);
 }
 
 /****** Memory status/property functions ******
@@ -158,38 +161,77 @@ void myfree(void* block)
  */
 
 /* Get the number of contiguous areas of free space in memory. */
-int mem_holes()
-{
-	return 0;
+int mem_holes() {
+    int countOfFreeBlocks = 0;
+    struct memoryList *currentBlock = head;
+    do {
+        if (currentBlock->alloc == 0)
+            countOfFreeBlocks++;
+        currentBlock = currentBlock->next;
+    } while (currentBlock != NULL)
+        ;
+    return countOfFreeBlocks;
 }
 
 /* Get the number of bytes allocated */
-int mem_allocated()
-{
-	return 0;
+int mem_allocated() {
+    int numberOfBytes = 0;
+    struct memoryList *currentBlock = head;
+    do {
+        if (currentBlock->alloc == 1)
+            numberOfBytes += currentBlock->size;
+        currentBlock = currentBlock->next;
+    } while (currentBlock != NULL)
+            ;
+    return numberOfBytes;
 }
 
 /* Number of non-allocated bytes */
 int mem_free()
 {
-	return 0;
+    int numberOfBytes = 0;
+    struct memoryList *currentBlock = head;
+    do {
+        if (currentBlock->alloc == 0)
+            numberOfBytes += currentBlock->size;
+        currentBlock = currentBlock->next;
+    } while (currentBlock != NULL)
+            ;
+    return numberOfBytes;
 }
 
 /* Number of bytes in the largest contiguous area of unallocated memory */
 int mem_largest_free()
 {
-	return 0;
+    int largestNumberOfByte = 0;
+    struct memoryList *currentBlock = head;
+    do {
+        if (largestNumberOfByte < currentBlock->size && currentBlock->alloc == 0)
+            largestNumberOfByte = currentBlock->size;
+        currentBlock = currentBlock->next;
+    } while (currentBlock != NULL)
+            ;
+    return largestNumberOfByte;
 }
 
 /* Number of free blocks smaller than "size" bytes. */
 int mem_small_free(int size)
 {
+    int countOfFreeBlocks = 0;
+    struct memoryList *currentBlock = head;
+    do {
+        if (currentBlock->alloc == 0 && currentBlock->size < size)
+            countOfFreeBlocks++;
+        currentBlock = currentBlock->next;
+    } while (currentBlock != NULL)
+            ;
+    return countOfFreeBlocks;
 	return 0;
-}       
+}
 
 char mem_is_alloc(void *ptr)
 {
-        return 0;
+    return  ((struct memoryList *)ptr)->alloc;
 }
 
 /* 
@@ -309,34 +351,47 @@ void try_mymem(int argc, char **argv) {
 }
 
 int main() {
-   // void *a, *b, *c, *d, *e;
-   // initmem(strat, 500);
+    // strategies strat = Best;
+    // void *a, *b, *c, *d, *e;
+    // initmem(strat, 500);
 
     printf("main\n");
 
-     strategies strat = Best;
+    strategies strat = Best;
 
-     initmem(strat, 500);
-     printf("init: 500 memory\n");
-// First creat first use
-     struct memoryList *b =  getBestFreeBlock(100);
-     printf("memoryalloc(100)");
-     struct memoryList *s = splitBlock(b , 100);
-     printf("Contents of structure %s Reminder:  %d\n", s, s->size);
+    initmem(strat, 500);
 
-    void *b1 =  getBestFreeBlock(75);
-     printf("memoryalloc(75)");
+    struct memoryList *b = getBestFreeBlock(100);
 
-    struct memoryList *s1 = splitBlock(b1 , 75);
-    printf("Contents of structure %c Reminder:  %d\n", s1, s1->size);
+    struct memoryList *s = splitBlock(b, 100);
+    printf("Contents of structure %c are %d\n", s, s->size);
+    printf("Numbers of free holes: %d\n", mem_holes());
+    printf("mem_allocated: Bytes allocated %d\n", mem_allocated());
+    printf("mem_free: Bytes non-allocated %d\n", mem_free());
+    printf("mem_largest_free: Bytes non-allocated %d\n", mem_largest_free());
+    printf("mem_small_free: numbers of blocks smaller than 200 non-allocated %d\n", mem_small_free(200));
+    if (mem_is_alloc(b))
+       printf("mem_is_alloc return 1\n");
+    myfree(b);
+    if (!mem_is_alloc(b))
+        printf("mem_is_alloc return 0\n");
+    printf("mem_small_free: numbers of blocks smaller than 200 non-allocated %d\n", mem_small_free(200));
+    printf("mem_largest_free: Bytes non-allocated %d\n", mem_largest_free());
+    printf("mem_free: Bytes non-allocated %d\n", mem_free());
+    printf("mem_allocated: Bytes allocated %d\n", mem_allocated());
+    printf("Numbers of free holes: %d\n", mem_holes());
+    exit(0);
+    void *b1 = getBestFreeBlock(75);
 
-    void *b2 =  getBestFreeBlock(50);
-     printf("memoryalloc(50)");
+    struct memoryList *s1 = splitBlock(b1, 75);
+    printf("Contents of structure %c are %d\n", s1, s1->size);
 
-    struct memoryList *s2 = splitBlock(b2 , 50);
-    printf("Contents of structure %c Reminder:  %d\n", s2, s2->size);
+    void *b2 = getBestFreeBlock(50);
 
-  //  print_memory_status();
-    printf("\nLast line in main");
-	return 0;
+    struct memoryList *s2 = splitBlock(b2, 50);
+    printf("Contents of structure %c are %d\n", s2, s2->size);
+
+    print_memory_status();
+    printf("main");
+    return 0;
 }
