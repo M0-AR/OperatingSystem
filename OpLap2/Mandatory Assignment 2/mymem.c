@@ -312,10 +312,16 @@ strategies strategyFromString(char * strategy)
  * be used in tests, but you may find them useful for debugging.
  */
 
+void print(struct memoryList *current, int index) {
+    printf("bytes: %d, allocation status: %i, index: %i\n", current->size, current->alloc, index);
+    if (current->next == head) return;
+    print(current->next, index + 1);
+}
+
 /* Use this function to print out the current contents of memory. */
 void print_memory()
 {
-	return;
+    print(head, 0);
 }
 
 /* Use this function to track memory allocation performance.  
