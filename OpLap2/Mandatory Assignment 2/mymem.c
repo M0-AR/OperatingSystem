@@ -25,7 +25,7 @@ strategies myStrategy = NotSet;    // Current strategy
 
 
 size_t mySize;
-void *myMemory = NULL;// ? 
+void *myMemory = NULL;
 
 static struct memoryList *head;
 static struct memoryList *next;
@@ -98,8 +98,13 @@ void *mymalloc(size_t requested)
 	            return NULL;
 	  case First:
 	            return NULL;
-	  case Best:
-	            return NULL;
+	  case Best: {
+          struct memoryList *bestFreeBlock = getBestFreeBlock(requested);
+          if (bestFreeBlock == NULL) return NULL;
+          struct memoryList *allocatedBlock = splitBlock(bestFreeBlock, requested);
+
+          return allocatedBlock->ptr;
+      }
 	  case Worst:
 	            return NULL;
 	  case Next:
@@ -108,6 +113,9 @@ void *mymalloc(size_t requested)
 	return NULL;
 }
 
+void* getNewBlockPointer(struct memoryList *current, size_t requested) {
+
+}
 
 
 struct memoryList* getBestFreeBlock(size_t size) {
@@ -361,10 +369,11 @@ int main() {
 
     initmem(strat, 500);
 
-    struct memoryList *b = getBestFreeBlock(100);
-
-    struct memoryList *s = splitBlock(b, 100);
-    printf("Contents of structure %c are %d\n", s, s->size);
+//    struct memoryList *b = getBestFreeBlock(100);
+//
+  //  struct memoryList *s = splitBlock(b, 100);
+//    printf("Contents of structure %c are %d\n", s, s->size);
+    struct memoryList *b =  mymalloc(100);
     printf("Numbers of free holes: %d\n", mem_holes());
     printf("mem_allocated: Bytes allocated %d\n", mem_allocated());
     printf("mem_free: Bytes non-allocated %d\n", mem_free());
@@ -395,3 +404,20 @@ int main() {
     printf("main");
     return 0;
 }
+
+/*
+ * Numbers of free holes: 1
+mem_allocated: Bytes allocated 100
+mem_free: Bytes non-allocated 400
+mem_largest_free: Bytes non-allocated 400
+mem_small_free: numbers of blocks smaller than 200 non-allocated 0
+mem_is_alloc return 1
+myfree: Contents of structure 0 was -> alloc: 1
+myfree: Contents of structure 0 is  -> alloc: 0
+mem_is_alloc return 0
+mem_small_free: numbers of blocks smaller than 200 non-allocated 1
+mem_largest_free: Bytes non-allocated 400
+mem_free: Bytes non-allocated 500
+mem_allocated: Bytes allocated 0
+Numbers of free holes: 2
+ */
