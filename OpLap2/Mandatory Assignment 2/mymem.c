@@ -75,8 +75,8 @@ void releaseMemory() {
 
 void initializeMemory(size_t size) {	
 	struct memoryList *current = malloc(sizeof(struct memoryList));// (struct memoryList *)
-	current -> last = NULL;
-    current -> next = NULL;
+	current -> last = current;
+    current -> next = current;
     current -> size = size;
     current -> alloc = 0;
     current -> ptr = myMemory;
@@ -115,6 +115,40 @@ void *mymalloc(size_t requested)
 	return NULL;
 }
 
+int main() {
+    struct memoryList  *a, *b, *c, *d, *e, *h;
+
+
+
+    /* A simple example.
+       Each algorithm should produce a different layout. */
+
+    initmem(1,500);
+
+    a = mymalloc(100);
+    h = head;
+    b = mymalloc(100);
+    c = mymalloc(100);
+    myfree(b);
+    d = mymalloc(50);
+    myfree(a);
+    e = mymalloc(25);
+
+    print_memory();
+    print_memory_status();
+}
+
+/*
+ * bytes: 100, allocation status: 1, index: 0
+bytes: 100, allocation status: 1, index: 1
+bytes: 100, allocation status: 1, index: 2
+bytes: 50, allocation status: 1, index: 3
+bytes: 25, allocation status: 1, index: 4
+bytes: 125, allocation status: 0, index: 5
+375 out of 500 bytes allocated.
+125 bytes are free in 1 holes; maximum allocatable block is 125 bytes.
+Average hole size is 125.000000.
+ */
 void* getNewBlockPointer(struct memoryList *current, size_t requested) {
 
 }
@@ -125,12 +159,13 @@ struct memoryList* getBestFreeBlock(size_t size) {
 	struct memoryList *currentBlock = head;
 	do {
 		if (currentBlock->alloc == 0 && currentBlock->size >= size && 
-			(bestBlock == NULL // Try here to put !bestBlock instead 
+			(bestBlock == NULL // Try here to put !bestBlock instead
 			 || currentBlock->size < bestBlock-> size)) {
 			bestBlock = currentBlock;
 		}
 		currentBlock = currentBlock->next;
-	} while (currentBlock != NULL);
+	} while (currentBlock != head)
+	    ;
 	return bestBlock;
 }
 
@@ -144,8 +179,8 @@ struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 		newBlock -> ptr = currentBlock->ptr + size;
 
 		/* Insert newBlock into doubly linked list */
-		if (currentBlock->next != NULL) 		
-			currentBlock -> next->last = newBlock;
+
+		currentBlock -> next->last = newBlock;
 		newBlock -> next = currentBlock->next;
 		newBlock -> last = currentBlock;
 		currentBlock -> next = newBlock;
@@ -158,10 +193,18 @@ struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 /* Frees a block of memory previously allocated by mymalloc. */
 void myfree(void *block) {
     // malloc(sizeof(struct memoryList));
-    struct memoryList *currentBlock = block;
+   // struct memoryList *currentBlock = block;
     //printf("myfree: Contents of structure %c was -> alloc: %d \n", currentBlock, currentBlock->alloc);
-    currentBlock->alloc = 0;
+   // currentBlock->alloc = 0;
     //printf("myfree: Contents of structure %c is  -> alloc: %d \n", currentBlock, currentBlock->alloc);
+
+    struct memoryList *currentBlock = head;
+    do {
+        if (currentBlock->ptr == block)
+            currentBlock->alloc = 0;
+        currentBlock = currentBlock->next;
+    } while (currentBlock != head)
+            ;
 }
 
 /****** Memory status/property functions ******
@@ -178,7 +221,7 @@ int mem_holes() {
         if (currentBlock->alloc == 0)
             countOfFreeBlocks++;
         currentBlock = currentBlock->next;
-    } while (currentBlock != NULL)
+    } while (currentBlock != head)
         ;
     return countOfFreeBlocks;
 }
@@ -191,7 +234,7 @@ int mem_allocated() {
         if (currentBlock->alloc == 1)
             numberOfBytes += currentBlock->size;
         currentBlock = currentBlock->next;
-    } while (currentBlock != NULL)
+    } while (currentBlock != head)
             ;
     return numberOfBytes;
 }
@@ -205,7 +248,7 @@ int mem_free()
         if (currentBlock->alloc == 0)
             numberOfBytes += currentBlock->size;
         currentBlock = currentBlock->next;
-    } while (currentBlock != NULL)
+    } while (currentBlock != head)
             ;
     return numberOfBytes;
 }
@@ -219,7 +262,7 @@ int mem_largest_free()
         if (largestNumberOfByte < currentBlock->size && currentBlock->alloc == 0)
             largestNumberOfByte = currentBlock->size;
         currentBlock = currentBlock->next;
-    } while (currentBlock != NULL)
+    } while (currentBlock != head)
             ;
     return largestNumberOfByte;
 }
@@ -233,7 +276,7 @@ int mem_small_free(int size)
         if (currentBlock->alloc == 0 && currentBlock->size < size)
             countOfFreeBlocks++;
         currentBlock = currentBlock->next;
-    } while (currentBlock != NULL)
+    } while (currentBlock != head)
             ;
     return countOfFreeBlocks;
 	return 0;
@@ -365,6 +408,7 @@ void try_mymem(int argc, char **argv) {
 	print_memory_status();
 	
 }
+
 /*
 int main() {
     // strategies strat = Best;
