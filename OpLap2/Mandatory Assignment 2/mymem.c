@@ -115,40 +115,6 @@ void *mymalloc(size_t requested)
 	return NULL;
 }
 
-int main() {
-    struct memoryList  *a, *b, *c, *d, *e, *h;
-
-
-
-    /* A simple example.
-       Each algorithm should produce a different layout. */
-
-    initmem(1,500);
-
-    a = mymalloc(100);
-    h = head;
-    b = mymalloc(100);
-    c = mymalloc(100);
-    myfree(b);
-    d = mymalloc(50);
-    myfree(a);
-    e = mymalloc(25);
-
-    print_memory();
-    print_memory_status();
-}
-
-/*
- * bytes: 100, allocation status: 1, index: 0
-bytes: 100, allocation status: 1, index: 1
-bytes: 100, allocation status: 1, index: 2
-bytes: 50, allocation status: 1, index: 3
-bytes: 25, allocation status: 1, index: 4
-bytes: 125, allocation status: 0, index: 5
-375 out of 500 bytes allocated.
-125 bytes are free in 1 holes; maximum allocatable block is 125 bytes.
-Average hole size is 125.000000.
- */
 void* getNewBlockPointer(struct memoryList *current, size_t requested) {
 
 }
@@ -192,12 +158,6 @@ struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 
 /* Frees a block of memory previously allocated by mymalloc. */
 void myfree(void *block) {
-    // malloc(sizeof(struct memoryList));
-   // struct memoryList *currentBlock = block;
-    //printf("myfree: Contents of structure %c was -> alloc: %d \n", currentBlock, currentBlock->alloc);
-   // currentBlock->alloc = 0;
-    //printf("myfree: Contents of structure %c is  -> alloc: %d \n", currentBlock, currentBlock->alloc);
-
     struct memoryList *currentBlock = head;
     do {
         if (currentBlock->ptr == block)
@@ -416,67 +376,3 @@ void try_mymem(int argc, char **argv) {
 	
 }
 
-/*
-int main() {
-    // strategies strat = Best;
-    // void *a, *b, *c, *d, *e;
-    // initmem(strat, 500);
-
-    printf("main\n");
-
-    strategies strat = Best;
-
-    initmem(strat, 500);
-
-//    struct memoryList *b = getBestFreeBlock(100);
-//
-  //  struct memoryList *s = splitBlock(b, 100);
-//    printf("Contents of structure %c are %d\n", s, s->size);
-    struct memoryList *b =  mymalloc(100);
-    printf("Numbers of free holes: %d\n", mem_holes());
-    printf("mem_allocated: Bytes allocated %d\n", mem_allocated());
-    printf("mem_free: Bytes non-allocated %d\n", mem_free());
-    printf("mem_largest_free: Bytes non-allocated %d\n", mem_largest_free());
-    printf("mem_small_free: numbers of blocks smaller than 200 non-allocated %d\n", mem_small_free(200));
-    if (mem_is_alloc(b))
-       printf("mem_is_alloc return 1\n");
-    myfree(b);
-    if (!mem_is_alloc(b))
-        printf("mem_is_alloc return 0\n");
-    printf("mem_small_free: numbers of blocks smaller than 200 non-allocated %d\n", mem_small_free(200));
-    printf("mem_largest_free: Bytes non-allocated %d\n", mem_largest_free());
-    printf("mem_free: Bytes non-allocated %d\n", mem_free());
-    printf("mem_allocated: Bytes allocated %d\n", mem_allocated());
-    printf("Numbers of free holes: %d\n", mem_holes());
-    exit(0);
-    void *b1 = getBestFreeBlock(75);
-
-    struct memoryList *s1 = splitBlock(b1, 75);
-    printf("Contents of structure %c are %d\n", s1, s1->size);
-
-    void *b2 = getBestFreeBlock(50);
-
-    struct memoryList *s2 = splitBlock(b2, 50);
-    printf("Contents of structure %c are %d\n", s2, s2->size);
-
-    print_memory_status();
-    printf("main");
-    return 0;
-}
-*/
-/*
- * Numbers of free holes: 1
-mem_allocated: Bytes allocated 100
-mem_free: Bytes non-allocated 400
-mem_largest_free: Bytes non-allocated 400
-mem_small_free: numbers of blocks smaller than 200 non-allocated 0
-mem_is_alloc return 1
-myfree: Contents of structure 0 was -> alloc: 1
-myfree: Contents of structure 0 is  -> alloc: 0
-mem_is_alloc return 0
-mem_small_free: numbers of blocks smaller than 200 non-allocated 1
-mem_largest_free: Bytes non-allocated 400
-mem_free: Bytes non-allocated 500
-mem_allocated: Bytes allocated 0
-Numbers of free holes: 2
- */
