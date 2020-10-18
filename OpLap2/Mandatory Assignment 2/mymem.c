@@ -75,129 +75,88 @@ void releaseMemory() {
 
 void initializeMemory(size_t size) {	
 	struct memoryList *current = malloc(sizeof(struct memoryList));// (struct memoryList *)
-	current -> last = current;
+    current -> last = current;
     current -> next = current;
     current -> size = size;
     current -> alloc = 0;
-    current -> ptr = myMemory;
+    current -> ptr = mymemory;
     head = current;
     next = current;
 }
 
-/* Allocate a block of memory with the requested size.
- *  If the requested block is not available, mymalloc returns NULL.
- *  Otherwise, it returns a pointer to the newly allocated block.
- *  Restriction: requested >= 1 
+/* allocate a block of memory with the requested size.
+ *  if the requested block is not available, mymalloc returns null.
+ *  otherwise, it returns a pointer to the newly allocated block.
+ *  restriction: requested >= 1
  */
 
 void *mymalloc(size_t requested)
 {
-	assert((int)myStrategy > 0);
-	
-	switch (myStrategy)
+	assert((int)mystrategy > 0);
+
+	switch (mystrategy)
 	  {
-	  case NotSet: 
-	            return NULL;
-	  case First:
-	            return NULL;
-	  case Best: {
-          struct memoryList *bestFreeBlock = getBestFreeBlock(requested);
-          if (bestFreeBlock == NULL) return NULL;
-          struct memoryList *allocatedBlock = splitBlock(bestFreeBlock, requested);
-          next = bestFreeBlock->next;
-          return bestFreeBlock->ptr;
+	  case notset:
+	            return null;
+	  case first:
+	            return null;
+	  case best: {
+          struct memorylist *bestfreeblock = getbestfreeblock(requested);
+          if (bestfreeblock == null) return null;
+          struct memorylist *allocatedblock = splitblock(bestfreeblock, requested);
+          next = bestfreeblock->next;
+          return bestfreeblock->ptr;
       }
-	  case Worst:
-	            return NULL;
-	  case Next:
-	            return NULL;
+	  case worst:
+	            return null;
+	  case next:
+	            return null;
 	  }
-	return NULL;
+	return null;
 }
 
-int main() {
-    struct memoryList  *a, *b, *c, *d, *e, *h;
-
-
-
-    /* A simple example.
-       Each algorithm should produce a different layout. */
-
-    initmem(1,500);
-
-    a = mymalloc(100);
-    h = head;
-    b = mymalloc(100);
-    c = mymalloc(100);
-    myfree(b);
-    d = mymalloc(50);
-    myfree(a);
-    e = mymalloc(25);
-
-    print_memory();
-    print_memory_status();
-}
-
-/*
- * bytes: 100, allocation status: 1, index: 0
-bytes: 100, allocation status: 1, index: 1
-bytes: 100, allocation status: 1, index: 2
-bytes: 50, allocation status: 1, index: 3
-bytes: 25, allocation status: 1, index: 4
-bytes: 125, allocation status: 0, index: 5
-375 out of 500 bytes allocated.
-125 bytes are free in 1 holes; maximum allocatable block is 125 bytes.
-Average hole size is 125.000000.
- */
-void* getNewBlockPointer(struct memoryList *current, size_t requested) {
+void* getnewblockpointer(struct memorylist *current, size_t requested) {
 
 }
 
 
-struct memoryList* getBestFreeBlock(size_t size) {
-	struct memoryList *bestBlock = NULL;
-	struct memoryList *currentBlock = head;
+struct memorylist* getbestfreeblock(size_t size) {
+	struct memorylist *bestblock = null;
+	struct memorylist *currentblock = head;
 	do {
-		if (currentBlock->alloc == 0 && currentBlock->size >= size && 
-			(bestBlock == NULL // Try here to put !bestBlock instead
-			 || currentBlock->size < bestBlock-> size)) {
-			bestBlock = currentBlock;
+		if (currentblock->alloc == 0 && currentblock->size >= size &&
+			(bestblock == NULL // try here to put !bestblock instead
+			 || currentblock->size < bestblock-> size)) {
+			bestblock = currentblock;
 		}
-		currentBlock = currentBlock->next;
-	} while (currentBlock != head)
-	    ;
-	return bestBlock;
+		currentblock = currentblock->next;
+	} while (currentblock != head);
+	return bestblock;
 }
 
-struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
-	currentBlock -> alloc = 1;
-	if (currentBlock-> size != size) {
-		struct memoryList *newBlock = malloc(sizeof(struct memoryList));//Tail of node  // (struct memoryList *)
-		newBlock -> size = currentBlock->size - size;
-		currentBlock -> size = size;
-		newBlock -> alloc = 0;
-		newBlock -> ptr = currentBlock->ptr + size;
+struct memorylist* splitblock(struct memorylist *currentblock, size_t size) {
+	currentblock -> alloc = 1;
+	if (currentblock-> size != size) {
+		struct memorylist *newblock = malloc(sizeof(struct memorylist));//tail of node  // (struct memorylist *)
+		newblock -> size = currentblock->size - size;
+		currentblock -> size = size;
+		newblock -> alloc = 0;
+		newblock -> ptr = currentblock->ptr + size;
 
-		/* Insert newBlock into doubly linked list */
+		/* insert newblock into doubly linked list */
 
-		currentBlock -> next->last = newBlock;
-		newBlock -> next = currentBlock->next;
-		newBlock -> last = currentBlock;
-		currentBlock -> next = newBlock;
-		return newBlock;
+		currentblock -> next->last = newblock;
+		newblock -> next = currentblock->next;
+		newblock -> last = currentblock;
+		currentblock -> next = newblock;
+		return newblock;
 	}
-	currentBlock->size = size;
-	return NULL;
+	currentblock->size = size;
+	return null;
 }
 
-/* Frees a block of memory previously allocated by mymalloc. */
+/* frees a block of memory previously allocated by mymalloc. */
 void myfree(void *block) {
-    // malloc(sizeof(struct memoryList));
-   // struct memoryList *currentBlock = block;
-    //printf("myfree: Contents of structure %c was -> alloc: %d \n", currentBlock, currentBlock->alloc);
-   // currentBlock->alloc = 0;
-    //printf("myfree: Contents of structure %c is  -> alloc: %d \n", currentBlock, currentBlock->alloc);
-
     struct memoryList *currentBlock = head;
     do {
         if (currentBlock->ptr == block)
@@ -207,78 +166,78 @@ void myfree(void *block) {
             ;
 }
 
-/****** Memory status/property functions ******
- * Implement these functions.
- * Note that when refered to "memory" here, it is meant that the 
- * memory pool this module manages via initmem/mymalloc/myfree. 
+/****** memory status/property functions ******
+ * implement these functions.
+ * note that when refered to "memory" here, it is meant that the
+ * memory pool this module manages via initmem/mymalloc/myfree.
  */
 
-/* Get the number of contiguous areas of free space in memory. */
+/* get the number of contiguous areas of free space in memory. */
 int mem_holes() {
-    int countOfFreeBlocks = 0;
-    struct memoryList *currentBlock = head;
+    int countoffreeblocks = 0;
+    struct memorylist *currentblock = head;
     do {
-        if (currentBlock->alloc == 0)
-            countOfFreeBlocks++;
-        currentBlock = currentBlock->next;
-    } while (currentBlock != head)
+        if (currentblock->alloc == 0)
+            countoffreeblocks++;
+        currentblock = currentblock->next;
+    } while (currentblock != head)
         ;
-    return countOfFreeBlocks;
+    return countoffreeblocks;
 }
 
-/* Get the number of bytes allocated */
+/* get the number of bytes allocated */
 int mem_allocated() {
-    int numberOfBytes = 0;
-    struct memoryList *currentBlock = head;
+    int numberofbytes = 0;
+    struct memorylist *currentblock = head;
     do {
-        if (currentBlock->alloc == 1)
-            numberOfBytes += currentBlock->size;
-        currentBlock = currentBlock->next;
-    } while (currentBlock != head)
+        if (currentblock->alloc == 1)
+            numberofbytes += currentblock->size;
+        currentblock = currentblock->next;
+    } while (currentblock != head)
             ;
-    return numberOfBytes;
+    return numberofbytes;
 }
 
-/* Number of non-allocated bytes */
+/* number of non-allocated bytes */
 int mem_free()
 {
-    int numberOfBytes = 0;
-    struct memoryList *currentBlock = head;
+    int numberofbytes = 0;
+    struct memorylist *currentblock = head;
     do {
-        if (currentBlock->alloc == 0)
-            numberOfBytes += currentBlock->size;
-        currentBlock = currentBlock->next;
-    } while (currentBlock != head)
+        if (currentblock->alloc == 0)
+            numberofbytes += currentblock->size;
+        currentblock = currentblock->next;
+    } while (currentblock != head)
             ;
-    return numberOfBytes;
+    return numberofbytes;
 }
 
-/* Number of bytes in the largest contiguous area of unallocated memory */
+/* number of bytes in the largest contiguous area of unallocated memory */
 int mem_largest_free()
 {
-    int largestNumberOfByte = 0;
-    struct memoryList *currentBlock = head;
+    int largestnumberofbyte = 0;
+    struct memorylist *currentblock = head;
     do {
-        if (largestNumberOfByte < currentBlock->size && currentBlock->alloc == 0)
-            largestNumberOfByte = currentBlock->size;
-        currentBlock = currentBlock->next;
-    } while (currentBlock != head)
+        if (largestnumberofbyte < currentblock->size && currentblock->alloc == 0)
+            largestnumberofbyte = currentblock->size;
+        currentblock = currentblock->next;
+    } while (currentblock != head)
             ;
-    return largestNumberOfByte;
+    return largestnumberofbyte;
 }
-// TODO: Smaller or equal not just smaller
-/* Number of free blocks smaller than "size" bytes. */
+
+/* number of free blocks smaller than "size" bytes. */
 int mem_small_free(int size)
 {
-    int countOfFreeBlocks = 0;
-    struct memoryList *currentBlock = head;
+    int countoffreeblocks = 0;
+    struct memorylist *currentblock = head;
     do {
-        if (currentBlock->alloc == 0 && currentBlock->size <= size)
-            countOfFreeBlocks++;
-        currentBlock = currentBlock->next;
-    } while (currentBlock != head)
+        if (currentblock->alloc == 0 && currentblock->size <= size)
+            countoffreeblocks++;
+        currentblock = currentblock->next;
+    } while (currentblock != head)
             ;
-    return countOfFreeBlocks;
+    return countoffreeblocks;
 	return 0;
 }
 
@@ -294,61 +253,61 @@ char mem_is_alloc(void *ptr)
     return  0;
 }
 
-/* 
- * Feel free to use these functions, but do not modify them.  
- * The test code uses them, but you may find them useful.
+/*
+ * feel free to use these functions, but do not modify them.
+ * the test code uses them, but you may find them useful.
  */
 
 
-//Returns a pointer to the memory pool.
+//returns a pointer to the memory pool.
 void *mem_pool()
 {
-	return myMemory;
+	return mymemory;
 }
 
-// Returns the total number of bytes in the memory pool. */
+// returns the total number of bytes in the memory pool. */
 int mem_total()
 {
-	return mySize;
+	return mysize;
 }
 
 
-// Get string name for a strategy. 
+// get string name for a strategy.
 char *strategy_name(strategies strategy)
 {
 	switch (strategy)
 	{
-		case Best:
+		case best:
 			return "best";
-		case Worst:
+		case worst:
 			return "worst";
-		case First:
+		case first:
 			return "first";
-		case Next:
+		case next:
 			return "next";
 		default:
 			return "unknown";
 	}
 }
 
-// Get strategy from name.
-strategies strategyFromString(char * strategy)
+// get strategy from name.
+strategies strategyfromstring(char * strategy)
 {
 	if (!strcmp(strategy,"best"))
 	{
-		return Best;
+		return best;
 	}
 	else if (!strcmp(strategy,"worst"))
 	{
-		return Worst;
+		return worst;
 	}
 	else if (!strcmp(strategy,"first"))
 	{
-		return First;
+		return first;
 	}
 	else if (!strcmp(strategy,"next"))
 	{
-		return Next;
+		return next;
 	}
 	else
 	{
@@ -357,49 +316,49 @@ strategies strategyFromString(char * strategy)
 }
 
 
-/* 
- * These functions are for you to modify however you see fit.  These will not
+/*
+ * these functions are for you to modify however you see fit.  these will not
  * be used in tests, but you may find them useful for debugging.
  */
 
-void print(struct memoryList *current, int index) {
+void print(struct memorylist *current, int index) {
     printf("bytes: %d, allocation status: %i, index: %i\n", current->size, current->alloc, index);
     if (current->next == head) return;
     print(current->next, index + 1);
 }
 
-/* Use this function to print out the current contents of memory. */
+/* use this function to print out the current contents of memory. */
 void print_memory()
 {
     print(head, 0);
 }
 
-/* Use this function to track memory allocation performance.  
- * This function does not depend on your implementation, 
+/* use this function to track memory allocation performance.
+ * this function does not depend on your implementation,
  * but on the functions you wrote above.
- */ 
+ */
 void print_memory_status()
 {
 	printf("%d out of %d bytes allocated.\n",mem_allocated(),mem_total());
 	printf("%d bytes are free in %d holes; maximum allocatable block is %d bytes.\n",mem_free(),mem_holes(),mem_largest_free());
-	printf("Average hole size is %f.\n\n",((float)mem_free())/mem_holes());
+	printf("average hole size is %f.\n\n",((float)mem_free())/mem_holes());
 }
 
-/* Use this function to see what happens when your malloc and free
- * implementations are called.  Run "mem -try <args>" to call this function.
- * We have given you a simple example to start.
+/* use this function to see what happens when your malloc and free
+ * implementations are called.  run "mem -try <args>" to call this function.
+ * we have given you a simple example to start.
  */
 void try_mymem(int argc, char **argv) {
         strategies strat;
 	void *a, *b, *c, *d, *e;
 	if(argc > 1)
-	  strat = strategyFromString(argv[1]);
+	  strat = strategyfromstring(argv[1]);
 	else
-	  strat = First;
-	
-	
-	/* A simple example.  
-	   Each algorithm should produce a different layout. */
+	  strat = first;
+
+
+	/* a simple example.
+	   each algorithm should produce a different layout. */
 	
 	initmem(strat,500);
 	
@@ -415,7 +374,6 @@ void try_mymem(int argc, char **argv) {
 	print_memory_status();
 	
 }
-
 /*
 int main() {
     // strategies strat = Best;
