@@ -74,12 +74,14 @@ void releaseMemory() {
 }
 
 void initializeMemory(size_t size) {	
-	head = malloc(sizeof(struct memoryList));// (struct memoryList *)
-	head -> last = NULL;
-	head -> next = NULL;
-	head -> size = size;
-	head -> alloc = 0;
-	head -> ptr = myMemory;
+	struct memoryList *current = malloc(sizeof(struct memoryList));// (struct memoryList *)
+	current -> last = NULL;
+    current -> next = NULL;
+    current -> size = size;
+    current -> alloc = 0;
+    current -> ptr = myMemory;
+    head = current;
+    next = current;
 }
 
 /* Allocate a block of memory with the requested size.
@@ -102,8 +104,8 @@ void *mymalloc(size_t requested)
           struct memoryList *bestFreeBlock = getBestFreeBlock(requested);
           if (bestFreeBlock == NULL) return NULL;
           struct memoryList *allocatedBlock = splitBlock(bestFreeBlock, requested);
-
-          return allocatedBlock->ptr;
+          next = bestFreeBlock->next;
+          return bestFreeBlock->ptr;
       }
 	  case Worst:
 	            return NULL;
@@ -149,7 +151,7 @@ struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 		currentBlock -> next = newBlock;
 		return newBlock;
 	}
-	// currentBlock->size = size;
+	currentBlock->size = size;
 	return NULL;
 }
 
