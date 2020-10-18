@@ -159,9 +159,9 @@ struct memoryList* splitBlock(struct memoryList *currentBlock, size_t size) {
 void myfree(void *block) {
     // malloc(sizeof(struct memoryList));
     struct memoryList *currentBlock = block;
-    printf("myfree: Contents of structure %c was -> alloc: %d \n", currentBlock, currentBlock->alloc);
+    //printf("myfree: Contents of structure %c was -> alloc: %d \n", currentBlock, currentBlock->alloc);
     currentBlock->alloc = 0;
-    printf("myfree: Contents of structure %c is  -> alloc: %d \n", currentBlock, currentBlock->alloc);
+    //printf("myfree: Contents of structure %c is  -> alloc: %d \n", currentBlock, currentBlock->alloc);
 }
 
 /****** Memory status/property functions ******
@@ -359,7 +359,7 @@ void try_mymem(int argc, char **argv) {
 	print_memory_status();
 	
 }
-
+/*
 int main() {
     // strategies strat = Best;
     // void *a, *b, *c, *d, *e;
@@ -406,7 +406,7 @@ int main() {
     printf("main");
     return 0;
 }
-
+*/
 /*
  * Numbers of free holes: 1
 mem_allocated: Bytes allocated 100
