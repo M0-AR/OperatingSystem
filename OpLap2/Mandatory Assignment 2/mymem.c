@@ -266,14 +266,14 @@ int mem_largest_free()
             ;
     return largestNumberOfByte;
 }
-
+// TODO: Smaller or equal not just smaller
 /* Number of free blocks smaller than "size" bytes. */
 int mem_small_free(int size)
 {
     int countOfFreeBlocks = 0;
     struct memoryList *currentBlock = head;
     do {
-        if (currentBlock->alloc == 0 && currentBlock->size < size)
+        if (currentBlock->alloc == 0 && currentBlock->size <= size)
             countOfFreeBlocks++;
         currentBlock = currentBlock->next;
     } while (currentBlock != head)
@@ -284,7 +284,14 @@ int mem_small_free(int size)
 
 char mem_is_alloc(void *ptr)
 {
-    return  ((struct memoryList *)ptr)->alloc;
+    struct memoryList *currentBlock = head;
+    do {
+        if (currentBlock->ptr == ptr)
+            return currentBlock->alloc;
+        currentBlock = currentBlock->next;
+    } while (currentBlock != head)
+            ;
+    return  0;
 }
 
 /* 
