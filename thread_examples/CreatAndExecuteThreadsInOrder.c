@@ -19,6 +19,9 @@ int main(int argc, char *argv[]) {
 		printf("Main here. Creating thread %d\n", i);
 		status = pthread_create(&threads[i], NULL, print_hello_world, (void *)i);
 
+		/* By adding this line to the code it will wait for the
+		 * thread to execute then
+		 * The new created thread is being puted in a queue using join */
 		pthread_join(threads[i], NULL);
 		
 		if(status != 0) {
