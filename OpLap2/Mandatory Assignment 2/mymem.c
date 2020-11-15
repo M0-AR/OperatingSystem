@@ -376,3 +376,6 @@ void try_mymem(int argc, char **argv) {
 	
 }
 
+int main() {
+
+}

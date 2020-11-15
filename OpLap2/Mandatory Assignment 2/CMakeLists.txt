@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(assignment4)
+project(assignment3)
 
 set(CMAKE_C_STANDARD 11)
 
